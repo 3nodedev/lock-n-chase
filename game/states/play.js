@@ -18,8 +18,11 @@
       this.player.anchor.setTo(0.5, 0.5);
       this.game.physics.arcade.enable(this.player);
       this.player.animations.add('robberAnimate', [0, 1], 8, true);
+
+      this.createWorld();
     },
     update: function() {
+      this.game.physics.arcade.collide(this.player, this.layer);
 
       this.movePlayer();
     },
@@ -49,6 +52,11 @@
     },
 
     createWorld: function() {
+      this.map = this.game.add.tilemap('map');
+      this.map.addTilesetImage('tileset');
+      this.layer = this.map.createLayer('Tile Layer 1');
+      this.layer.resizeWorld();
+      this.map.setCollisionBetween(0, 11);
     },
 
     clickListener: function() {
