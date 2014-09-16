@@ -13,7 +13,7 @@ Preload.prototype = {
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
     this.load.setPreloadSprite(this.asset);
 
-    this.load.spritesheet('player', 'assets/robber.png');
+    this.load.spritesheet('player', 'assets/robber.png', 30, 30);
     this.load.image('tileset', 'assets/tiles-lock-n-chase.png')
     this.load.tilemap('map', 'assets/lock-n-chase-tiled.json', null, Phaser.Tilemap.TILED_JSON);
   },

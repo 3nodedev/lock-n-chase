@@ -110,10 +110,43 @@ module.exports = Menu;
         down: this.game.input.keyboard.addKey(Phaser.Keyboard.S),
       };
 
+      this.player = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'player');
+      this.player.anchor.setTo(0.5, 0.5);
+      this.game.physics.arcade.enable(this.player);
+      this.player.animations.add('robberAnimate', [0, 1], 8, true);
     },
     update: function() {
 
+      this.movePlayer();
     },
+
+    movePlayer: function() {
+      if (this.cursor.left.isDown || this.wasd.left.isDown) {
+        this.player.body.velocity.x = -100;
+        this.player.animations.play('robberAnimate');
+      }
+      else if (this.cursor.right.isDown || this.wasd.right.isDown) {
+        this.player.body.velocity.x = 100;
+        this.player.animations.play('robberAnimate');
+      }
+      else if (this.cursor.up.isDown || this.wasd.up.isDown) {
+        this.player.body.velocity.y = -100;
+        this.player.animations.play('robberAnimate');
+      }
+      else if (this.cursor.down.isDown || this.wasd.down.isDown) {
+        this.player.body.velocity.y = 100;
+        this.player.animations.play('robberAnimate');
+      }
+      else {
+        this.player.body.velocity.x = 0;
+        this.player.body.velocity.y = 0;
+        this.player.animations.stop();
+      }
+    },
+
+    createWorld: function() {
+    },
+
     clickListener: function() {
       this.game.state.start('gameover');
     }
@@ -137,7 +170,7 @@ Preload.prototype = {
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
     this.load.setPreloadSprite(this.asset);
 
-    this.load.spritesheet('player', 'assets/robber.png');
+    this.load.spritesheet('player', 'assets/robber.png', 30, 30);
     this.load.image('tileset', 'assets/tiles-lock-n-chase.png')
     this.load.tilemap('map', 'assets/lock-n-chase-tiled.json', null, Phaser.Tilemap.TILED_JSON);
   },
