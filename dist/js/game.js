@@ -116,11 +116,24 @@ module.exports = Menu;
       this.player.animations.add('robberAnimate', [0, 1], 8, true);
 
       this.createWorld();
+      this.game.input.onDown.addOnce(this.replaceTiles, this);
+
     },
     update: function() {
       this.game.physics.arcade.collide(this.player, this.layer);
+      this.game.physics.arcade.collide(this.player, this.coinLayer, this.takeCoin);
 
       this.movePlayer();
+    },
+
+    takeCoin: function(player, tile) {
+      map.removeTile(tile.x, tile.y);
+    },
+
+    replaceTiles: function() {
+      this.map.setLayer(this.coinLayer);
+      this.map.replace(12, 13, this.coinLayer);
+      
     },
 
     movePlayer: function() {
@@ -152,7 +165,12 @@ module.exports = Menu;
       this.map.addTilesetImage('tileset');
       this.layer = this.map.createLayer('Tile Layer 1');
       this.layer.resizeWorld();
-      this.map.setCollisionBetween(0, 11);
+      this.coinLayer = this.map.createLayer('coins');
+      this.coinLayer.enableBody = true;
+      this.game.physics.arcade.enable(this.coinLayer, Phaser.Physics.ARCADE, true);
+      this.coinLayer.resizeWorld();
+      this.map.setCollisionBetween(1, 11, this.layer);
+      this.map.setCollision(12, this.coinLayer);
     },
 
     clickListener: function() {
@@ -178,7 +196,7 @@ Preload.prototype = {
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
     this.load.setPreloadSprite(this.asset);
 
-    this.load.spritesheet('player', 'assets/robber.png', 30, 30);
+    this.load.spritesheet('player', 'assets/robber.png', 32, 32);
     this.load.image('tileset', 'assets/tiles-lock-n-chase.png')
     this.load.tilemap('map', 'assets/lock-n-chase-tiled.json', null, Phaser.Tilemap.TILED_JSON);
   },

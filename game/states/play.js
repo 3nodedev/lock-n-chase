@@ -20,11 +20,24 @@
       this.player.animations.add('robberAnimate', [0, 1], 8, true);
 
       this.createWorld();
+      this.game.input.onDown.addOnce(this.replaceTiles, this);
+
     },
     update: function() {
       this.game.physics.arcade.collide(this.player, this.layer);
+      this.game.physics.arcade.collide(this.player, this.coinLayer, this.takeCoin);
 
       this.movePlayer();
+    },
+
+    takeCoin: function(player, tile) {
+      map.removeTile(tile.x, tile.y);
+    },
+
+    replaceTiles: function() {
+      this.map.setLayer(this.coinLayer);
+      this.map.replace(12, 13, this.coinLayer);
+      
     },
 
     movePlayer: function() {
@@ -56,7 +69,12 @@
       this.map.addTilesetImage('tileset');
       this.layer = this.map.createLayer('Tile Layer 1');
       this.layer.resizeWorld();
-      this.map.setCollisionBetween(0, 11);
+      this.coinLayer = this.map.createLayer('coins');
+      this.coinLayer.enableBody = true;
+      this.game.physics.arcade.enable(this.coinLayer, Phaser.Physics.ARCADE, true);
+      this.coinLayer.resizeWorld();
+      this.map.setCollisionBetween(1, 11, this.layer);
+      this.map.setCollision(12, this.coinLayer);
     },
 
     clickListener: function() {
